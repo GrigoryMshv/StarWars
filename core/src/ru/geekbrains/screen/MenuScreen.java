@@ -33,10 +33,8 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        batch.begin(); //начало отрисовки
-        background.draw(batch);
-        badlogic.draw(batch);
-        batch.end(); //конец отрисовки
+        update(delta);
+        draw();
     }
 
     @Override
@@ -51,4 +49,15 @@ public class MenuScreen extends BaseScreen {
         badlogic.touchDown(touch, pointer, button);
         return false;
     }
+
+    private void update(float delta) {
+        badlogic.update(delta);
+    };
+
+    private void draw() {
+        batch.begin(); //начало отрисовки
+        background.draw(batch);
+        badlogic.draw(batch);
+        batch.end(); //конец отрисовки
+    };
 }
