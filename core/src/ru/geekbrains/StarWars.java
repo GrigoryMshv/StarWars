@@ -8,6 +8,6 @@ public class StarWars extends Game {
 	
 	@Override  //иницилизация всех классов с которыми будем работать
 	public void create () {
-        setScreen(new MenuScreen());
+        setScreen(new MenuScreen(this));
 	}
 }
