@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.audio.Music;
 
 public class MenuScreen extends BaseScreen {
 
@@ -22,6 +23,7 @@ public class MenuScreen extends BaseScreen {
     private ButtonExit buttonExit;
     private ButtonPlay buttonPlay;
     private Star[] stars;
+    private Music bgSound;
 
     public MenuScreen(Game game) {
         this.game = game;
@@ -33,6 +35,8 @@ public class MenuScreen extends BaseScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
+        bgSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/bgSound.mp3"));
+        bgSound.play();
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
@@ -63,6 +67,7 @@ public class MenuScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();           //выгружает из памяти текстуры
         atlas.dispose();
+        bgSound.dispose();
         super.dispose();
     }
 
