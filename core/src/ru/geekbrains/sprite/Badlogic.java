@@ -12,7 +12,7 @@ import ru.geekbrains.math.Rect;
 
 public class Badlogic extends Sprite {
 
-    final static float V_LEN = 0.01f;
+    final static float V_LEN = 0.001f;
 
     private Vector2 newPos, vel, touch;
 
