@@ -1,4 +1,4 @@
-package ru.geekbrains.base;  //частично-общая логика для экранов
+package ru.geekbrains.base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -14,19 +14,17 @@ import ru.geekbrains.math.Rect;
 
 public class BaseScreen implements Screen, InputProcessor {
 
-    private Rect screenBounds;  //координаты экрана
-    private Rect worldBounds;   //мировые координаты
-    private Rect glBounds;      //координаты openGL
+    protected SpriteBatch batch;
 
-    private Matrix4 worldToGl;      //преобразование из мировых координат в координаты openGL
-    private Matrix3 screenToWorld; //преобразование из screen в мировые координаты
+    private Rect screenBounds;
+    protected Rect worldBounds;
+    private Rect glBounds;
+
+    private Matrix4 worldToGl;
+    private Matrix3 screenToWorld;
 
     private Vector2 touch;
 
-    protected SpriteBatch batch; //передаёт в процессор текстуры
-
-
-    //инициализация всего, что происходит на экране
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
@@ -39,10 +37,9 @@ public class BaseScreen implements Screen, InputProcessor {
         touch = new Vector2();
     }
 
-    //работает 60fps
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.5f, 0,0.2f, 1);
+        Gdx.gl.glClearColor(0.3f, 0.2f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
@@ -62,14 +59,13 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     public void resize(Rect worldBounds) {
+        System.out.println("worldBounds worldBounds.height = " + worldBounds.getHeight() + " worldBounds.with = " + worldBounds.getWidth());
     }
 
-    //срабатывает когда свернули приложение
     @Override
     public void pause() {
     }
 
-    //срабатывает когда развернули приложение
     @Override
     public void resume() {
     }
@@ -79,31 +75,26 @@ public class BaseScreen implements Screen, InputProcessor {
         dispose();
     }
 
-    //сами решаем когда срабатывает метод, в даном случае вызываем в методе hide
     @Override
     public void dispose() {
-        batch.dispose(); //выгружает всё лишнее из памяти
+        batch.dispose();
     }
 
-    //срабатывает на нажатие клавиши
     @Override
     public boolean keyDown(int keycode) {
         return false;
     }
 
-    //срабатывает на отжатие клавиши
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
 
-    //срабатывает на определенную клавишу
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
 
-    //тап пальцем или клик по экрану мышью (pointer - номер пальца, button - номер кнопки мыши)
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
@@ -112,10 +103,10 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     public boolean touchDown(Vector2 touch, int pointer, int button) {
+        System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
-    //убрали палец с экрана или отпустили мышь
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
@@ -124,10 +115,10 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     public boolean touchUp(Vector2 touch, int pointer, int button) {
+        System.out.println("touchUp touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
-    //протащили палец по экрану или мышь
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         touch.set(screenX, screenBounds.getHeight() - screenY).mul(screenToWorld);
@@ -136,16 +127,15 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     public boolean touchDragged(Vector2 touch, int pointer) {
+        System.out.println("touchDragged touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
-    //срабатывает при любом движении мыши
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
 
-    //срабатывает при скроле мыши
     @Override
     public boolean scrolled(int amount) {
         return false;
