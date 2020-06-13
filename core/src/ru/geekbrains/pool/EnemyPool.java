@@ -6,29 +6,30 @@ import com.badlogic.gdx.audio.Sound;
 import ru.geekbrains.base.SpritesPool;
 import ru.geekbrains.math.Rect;
 import ru.geekbrains.sprite.Enemy;
+import ru.geekbrains.screen.ScreenController;
 
-public class EnemyPool extends SpritesPool<Enemy> {
+public class EnemyPool extends SpritesPool <Enemy> {
 
-    private BulletPool bulletPool;
     private ExplosionPool explosionPool;
-    private Rect worldBounds;
-    private Sound sound;
+    private Sound shootSound;
 
-    public EnemyPool(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds) {
+    public EnemyPool(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, ScreenController screenController) {
+        super(screenController);
+        this.worldBounds = worldBounds;
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
-        this.worldBounds = worldBounds;
-        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/shootSound.wav"));
-    }
 
-    @Override
-    protected Enemy newObject() {
-        return new Enemy(bulletPool, explosionPool, worldBounds, sound);
-    }
+        @Override
+        protected Enemy newObject () {
+            Enemy newEnemy = new Enemy(bulletPool, explosionPool, worldBounds, shootSound);
+            newEnemy.setScreenController(screenController);
+            return newEnemy;
+        }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        sound.dispose();
+        @Override
+        public void dispose () {
+            super.dispose();
+            shootSound.dispose();
+        }
     }
 }

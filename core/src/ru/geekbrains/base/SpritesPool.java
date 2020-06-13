@@ -5,76 +5,68 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SpritesPool<T extends Sprite> {
+import ru.geekbrains.screen.ScreenController;
 
-    private final List<T> activeObjects = new ArrayList<>();
-    private final List<T> freeObjects = new ArrayList<>();
+public abstract class SpritesPool <T extends Sprite>{
+    private final List<T> activeObjects = new ArrayList<T>();
+    private final List<T> freeObjects = new ArrayList<T>();
+    protected ScreenController screenController;
+
+    public SpritesPool(ScreenController screenController) {
+        this.screenController = screenController;
+    }
 
     protected abstract T newObject();
 
-    public T obtain() {
+    public T obtain(){//получать
         T object;
-        if (freeObjects.isEmpty()) {
+        if(freeObjects.isEmpty()){
             object = newObject();
-        } else {
-            object = freeObjects.remove(freeObjects.size() - 1);
+        }else{
+            object = freeObjects.remove(0);
         }
         activeObjects.add(object);
-        System.out.println(getClass().getName() + " active/free: " + activeObjects.size() + "/" + freeObjects.size());
         return object;
     }
-
-    public void updateActiveSprites(float delta) {
-        for (Sprite sprite : activeObjects) {
-            if (sprite.isDestroyed()) {
+    public void updateActiveSprites(float delta){
+        for (T object : activeObjects){
+            if(object.isDestroyed()){
                 continue;
             }
-            sprite.update(delta);
+            object.update(delta);
         }
     }
-
-    public void drawActiveSprites(SpriteBatch batch) {
-        for (Sprite sprite : activeObjects) {
-            if (sprite.isDestroyed()) {
+    public void dispose(){
+        activeObjects.clear();
+        freeObjects.clear();
+    }
+    public List<T> getActiveObjects() {
+        return activeObjects;
+    }
+    public void drawActiveSprites(SpriteBatch batch){
+        for (T object : activeObjects){
+            if(object.isDestroyed()){
                 continue;
             }
-            sprite.draw(batch);
+            object.draw(batch);
         }
     }
-
-    public void freeAllDestroyed() {
-        for (int i = 0; i < activeObjects.size(); i++) {
+    private void free(T object){
+        object.flushDestroy();
+        if(activeObjects.remove(object))
+            freeObjects.add(object);
+    }
+    public void freeAllDestroyed(){
+        for (int i = 0; i < activeObjects.size(); i++){
             T object = activeObjects.get(i);
-            if (object.isDestroyed()) {
+            if(object.isDestroyed()){
                 free(object);
                 i--;
             }
         }
     }
-
-    public void makeAllFree(){
-        for (int i = 0; i < activeObjects.size(); i++){
-            T object = activeObjects.get(i);
-            free(object);
-            i--;
-        }
-    }
-
-    public List<T> getActiveObjects() {
-        return activeObjects;
-    }
-
-    public void dispose() {
+    public void freeAllActiveObjects(){
+        freeObjects.addAll(activeObjects);
         activeObjects.clear();
-        freeObjects.clear();
     }
-
-    private void free(T object) {
-        object.flushDestroy();
-        if (activeObjects.remove(object)) {
-            freeObjects.add(object);
-        }
-        System.out.println(getClass().getName() + " active/free: " + activeObjects.size() + "/" + freeObjects.size());
-    }
-
 }

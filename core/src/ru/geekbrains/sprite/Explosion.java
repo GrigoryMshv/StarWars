@@ -21,15 +21,18 @@ public class Explosion extends Sprite {
     public void set(float height, Vector2 pos) {
         setHeightProportion(height);
         this.pos.set(pos);
-        sound.play();
+        if(getScreenController().isEffects()) {
+            sound.play();
+        }
+        frame = 0;
     }
 
     @Override
     public void update(float delta) {
-        animateTimer += delta;
-        if (animateTimer >= ANIMATE_INTERVAL) {
+        animateTimer =+ delta;
+        if(animateTimer>=ANIMATE_INTERVAL){
             animateTimer = 0f;
-            if (++frame == regions.length) {
+            if(++frame == regions.length){
                 destroy();
             }
         }
