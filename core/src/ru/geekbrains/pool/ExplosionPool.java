@@ -6,25 +6,29 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.geekbrains.base.SpritesPool;
 import ru.geekbrains.sprite.Explosion;
+import ru.geekbrains.screen.ScreenController;
 
 public class ExplosionPool extends SpritesPool<Explosion> {
 
     private TextureAtlas atlas;
-    private Sound sound;
+    private Sound explosionSound;
 
-    public ExplosionPool(TextureAtlas atlas) {
-        this.atlas = atlas;
-        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/explSound.wav"));
-    }
+    public ExplosionPool(TextureAtlas atlas, ScreenController screenController) {
+            super(screenController);
+            this.atlas = atlas;
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/boom.mp3"));
+        }
 
-    @Override
-    protected Explosion newObject() {
-        return new Explosion(atlas, sound);
-    }
+        @Override
+        protected Explosion newObject() {
+            Explosion newExplosion = new Explosion(atlas, explosionSound);
+            newExplosion.setScreenController(screenController);
+            return newExplosion;
+        }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        sound.dispose();
+        @Override
+        public void dispose() {
+            super.dispose();
+            explosionSound.dispose();
+        }
     }
-}
